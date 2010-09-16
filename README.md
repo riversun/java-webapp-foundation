@@ -63,6 +63,9 @@ ___
 
 <img src="https://riversun.github.io/img/jweb/configure_fetch.png" width=438px />
 
+Or this,
+- Source:"+refs/heads/*"
+- Destination "refs/remotes/origin/*"
 
 ___
 # Step 2. Add server to Eclipse
