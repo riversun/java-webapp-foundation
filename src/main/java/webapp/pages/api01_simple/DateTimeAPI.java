@@ -83,7 +83,12 @@ public class DateTimeAPI extends ControllerFactoryServlet {
 			final String tellme = asString("tellme");
 			final String fmt = asString("fmt");
 
+			final String callback = asString("callback");
+
+			boolean requireJSONP = (callback != null && !callback.isEmpty());
+
 			final DataTimeResponse res = new DataTimeResponse();
+
 			res.id = System.currentTimeMillis();
 			res.query = tellme;
 
@@ -102,9 +107,22 @@ public class DateTimeAPI extends ControllerFactoryServlet {
 			}
 
 			if ("xml".equals(fmt)) {
+				// XML response
 				returnAsXML(res);
 			} else {
-				returnAsJSON(res);
+				// JSON response
+
+				if (requireJSONP) {
+					// JSONP
+
+					// Add "Access-Control-Allow-Origin" policy to HTTP header
+					response.setHeader("Access-Control-Allow-Origin", "*");
+
+					returnAsJSONP(callback, res);
+				} else {
+					// JSON
+					returnAsJSON(res);
+				}
 			}
 
 		}

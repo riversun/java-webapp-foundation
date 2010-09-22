@@ -37,6 +37,7 @@ import javax.servlet.http.HttpSession;
 
 import org.riversun.string_grabber.StringGrabber;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.xml.XmlMapper;
 
@@ -147,22 +148,55 @@ public abstract class Controller {
 		response.sendRedirect(sg.toString());
 	}
 
-	protected void returnAsJSON(Object o) throws ServletException, IOException {
+	/**
+	 * Returns object as JSON
+	 * 
+	 * @param modelObj
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void returnAsJSON(Object modelObj) throws ServletException, IOException {
 		setContentTypeTo_JSON_UTF8();
 
 		final PrintWriter out = response.getWriter();
 		final ObjectMapper mapper = new ObjectMapper();
-		final String json = mapper.writeValueAsString(o);
+		final String json = mapper.writeValueAsString(modelObj);
 		out.println(json);
 		out.close();
 	}
 
-	protected void returnAsXML(Object o) throws ServletException, IOException {
+	/**
+	 * Returns object as JSONP
+	 * 
+	 * @param callback
+	 * @param modelObj
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void returnAsJSONP(String callback, Object modelObj) throws ServletException, IOException {
+		setContentTypeTo_JSON_UTF8();
+
+		final PrintWriter out = response.getWriter();
+		final ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(Include.NON_NULL);
+		final String jsonp = callback + "(" + mapper.writeValueAsString(modelObj) + ");";
+		out.println(jsonp);
+		out.close();
+	}
+
+	/**
+	 * Returns object as XML
+	 * 
+	 * @param modelObj
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void returnAsXML(Object modelObj) throws ServletException, IOException {
 		setContentTypeTo_XML_UTF8();
 
 		final PrintWriter out = response.getWriter();
 		final XmlMapper mapper = new XmlMapper();
-		final String xml = mapper.writeValueAsString(o);
+		final String xml = mapper.writeValueAsString(modelObj);
 		out.println(xml);
 		out.close();
 	}
