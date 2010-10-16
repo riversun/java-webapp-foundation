@@ -25,6 +25,7 @@
  */
 package webapp.framework;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -56,24 +57,28 @@ public abstract class Controller {
 
 	private SecureCookieManager mSecureCookieManager = null;
 
+	private final ObjectMapper mJsonMapper = new ObjectMapper();
+	private final XmlMapper mXmlMapper = new XmlMapper();
+
 	public enum HttpMethod {
 		POST, //
 		GET, //
+		OPTIONS, //
 		OTHER, //
 	}
 
-	public void prepareDoService() throws ServletException, IOException {
-
+	public boolean prepareDoService() throws ServletException, IOException {
+		return true;
 	}
 
 	protected abstract void doService() throws ServletException, IOException;
 
-	protected String asString(String parameterName) {
-		return request.getParameter(parameterName);
-	}
-
 	protected String getRemoteHost() {
 		return request.getRemoteHost();
+	}
+
+	protected String asString(String parameterName) {
+		return request.getParameter(parameterName);
 	}
 
 	protected Long asLong(String parameterName) {
@@ -97,6 +102,32 @@ public abstract class Controller {
 		}
 		return retVal;
 
+	}
+
+	/**
+	 * Read request content as JSON object
+	 * 
+	 * @param valueType
+	 * @return
+	 * @throws Exception
+	 */
+	public <T> T asJSON(Class<T> valueType) throws Exception
+	{
+		final StringBuffer sb = new StringBuffer();
+
+		String line = null;
+
+		try {
+			BufferedReader reader = request.getReader();
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+			}
+		} catch (Exception e) {
+		}
+
+		final String inJson = sb.toString();
+
+		return mJsonMapper.readValue(inJson, valueType);
 	}
 
 	protected void requestScope(String name, Object value) {
@@ -159,8 +190,7 @@ public abstract class Controller {
 		setContentTypeTo_JSON_UTF8();
 
 		final PrintWriter out = response.getWriter();
-		final ObjectMapper mapper = new ObjectMapper();
-		final String json = mapper.writeValueAsString(modelObj);
+		final String json = mJsonMapper.writeValueAsString(modelObj);
 		out.println(json);
 		out.close();
 	}
@@ -177,9 +207,9 @@ public abstract class Controller {
 		setContentTypeTo_JSON_UTF8();
 
 		final PrintWriter out = response.getWriter();
-		final ObjectMapper mapper = new ObjectMapper();
-		mapper.setSerializationInclusion(Include.NON_NULL);
-		final String jsonp = callback + "(" + mapper.writeValueAsString(modelObj) + ");";
+
+		mJsonMapper.setSerializationInclusion(Include.NON_NULL);
+		final String jsonp = callback + "(" + mJsonMapper.writeValueAsString(modelObj) + ");";
 		out.println(jsonp);
 		out.close();
 	}
@@ -195,9 +225,21 @@ public abstract class Controller {
 		setContentTypeTo_XML_UTF8();
 
 		final PrintWriter out = response.getWriter();
-		final XmlMapper mapper = new XmlMapper();
-		final String xml = mapper.writeValueAsString(modelObj);
+
+		final String xml = mXmlMapper.writeValueAsString(modelObj);
 		out.println(xml);
+		out.close();
+	}
+
+	/**
+	 * Returns nothing
+	 * 
+	 * @throws IOException
+	 */
+	protected void returnNothing() throws IOException {
+		setContentTypeTo_JSON_UTF8();
+
+		final PrintWriter out = response.getWriter();
 		out.close();
 	}
 
@@ -281,7 +323,9 @@ public abstract class Controller {
 		if (mSecureCookieManager == null) {
 			mSecureCookieManager = new SecureCookieManager(this);
 		}
-		String value = mSecureCookieManager.getSecureCookieValue(cookieKey);
+
+		final String value = mSecureCookieManager.getSecureCookieValue(cookieKey);
+
 		if (value == null) {
 			return defaultValue;
 		} else {
@@ -325,7 +369,9 @@ public abstract class Controller {
 		} else if (request.getMethod().equalsIgnoreCase("POST")) {
 
 			return HttpMethod.POST;
+		} else if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
 
+			return HttpMethod.OPTIONS;
 		} else {
 
 			return HttpMethod.OTHER;

@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
 
 import webapp.framework.Controller;
 import webapp.framework.ControllerFactoryServlet;
-import webapp.pages.WebAppBaseController;
+import webapp.framework.WebAppBaseController;
 
 /**
  * Web API Example

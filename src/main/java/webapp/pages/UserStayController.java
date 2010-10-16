@@ -26,6 +26,7 @@
 package webapp.pages;
 
 import webapp.def.ServiceDef;
+import webapp.framework.WebAppBaseController;
 import webapp.pages.view01_login.LoginInfo;
 
 /**
