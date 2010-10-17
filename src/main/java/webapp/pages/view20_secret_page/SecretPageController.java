@@ -43,6 +43,9 @@ import webapp.pages.UserStayController;
 
 /**
  * Controller Servlet class for displaying secret page <br>
+ * <br>
+ * If you want to set this page required login,see
+ * {@link webapp.pages.view01_login.LoginFilter.java}
  * 
  * @author Tom Misawa (riversun.org@gmail.com)
  *

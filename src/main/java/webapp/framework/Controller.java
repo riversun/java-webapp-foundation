@@ -113,6 +113,18 @@ public abstract class Controller {
 	 */
 	public <T> T asJSON(Class<T> valueType) throws Exception
 	{
+
+		final String inJson = asString();
+		return mJsonMapper.readValue(inJson, valueType);
+	}
+
+	/**
+	 * Read request content as String
+	 * 
+	 * @return
+	 */
+	public String asString() {
+
 		final StringBuffer sb = new StringBuffer();
 
 		String line = null;
@@ -124,10 +136,7 @@ public abstract class Controller {
 			}
 		} catch (Exception e) {
 		}
-
-		final String inJson = sb.toString();
-
-		return mJsonMapper.readValue(inJson, valueType);
+		return sb.toString();
 	}
 
 	protected void requestScope(String name, Object value) {
@@ -376,6 +385,28 @@ public abstract class Controller {
 
 			return HttpMethod.OTHER;
 
+		}
+	}
+
+	/**
+	 * Set CORS policy
+	 * 
+	 * @param value
+	 *            specify like "*","https://xxxxxx.com"
+	 */
+	protected void setAccessControlAllowOrigin(String value) {
+		response.addHeader("Access-Control-Allow-Origin", value);
+		response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+	}
+
+	/**
+	 * Enable Cookie while CORS connection
+	 * 
+	 * @param enabled
+	 */
+	protected void setAccessControlAllowCredentials(boolean enabled) {
+		if (enabled) {
+			response.addHeader("Access-Control-Allow-Credentials", String.valueOf(enabled));
 		}
 	}
 
