@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<body>
+	<h1>Server Push Example 01</h1>
+
+	<script type="text/javascript">
+		(function() {
+
+			if (window.EventSource) {
+
+				var es = new EventSource('sse');
+
+				es.addEventListener('message', function(e) {
+
+					console.log(e.type);
+					console.log(e.origin);
+					console.log(e.data);
+					
+					document.getElementById('received_message').innerHTML='"'+e.data+'"'+" at "+(new Date())+"<hr>"+document.getElementById('received_message').innerHTML;
+
+				}, false);
+
+				
+				es.addEventListener('error', function(e) {
+
+					//READY STATE
+					//0:CONNECTING	The connection is not yet open.
+					//1:OPEN		The connection is open and ready to communicate.
+					//2:CLOSING		The connection is in the process of closing.
+					//3:CLOSED		The connection is closed or couldn't be opened.
+					if (e.redyState !== 1) {
+						es.close();
+					}
+				}, false);
+			} else {
+				alert('');
+			}
+		})();
+	</script>
+	<h3>Please run 'SimpleSSEPushTest.java' to start push
+		notification.</h3>
+<h3>Received messages</h3>
+<div id="received_message"></div>
+</body>
+</html>

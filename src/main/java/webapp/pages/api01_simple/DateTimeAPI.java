@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
 
 import webapp.framework.Controller;
 import webapp.framework.ControllerFactoryServlet;
-import webapp.framework.WebAppBaseController;
+import webapp.framework.WebAPI;
 
 /**
  * Web API Example
@@ -72,12 +72,15 @@ public class DateTimeAPI extends ControllerFactoryServlet {
 	 * http://localhost:8080/example/datetime?tellme=date&fmt=xml
 	 *
 	 */
-	public static class DateTimeAPIImpl extends WebAppBaseController {
+	public static class DateTimeAPIImpl extends WebAPI {
 
 		private static final Log LOG = LogFactory.getLog(DateTimeAPIImpl.class);
 
 		@Override
 		public void doService() throws ServletException, IOException {
+
+			// Add "Access-Control-Allow-Origin" policy to HTTP header
+			setAccessControlAllowOrigin("*");
 
 			// get query param as string
 			final String tellme = asString("tellme");
@@ -114,10 +117,6 @@ public class DateTimeAPI extends ControllerFactoryServlet {
 
 				if (requireJSONP) {
 					// JSONP
-
-					// Add "Access-Control-Allow-Origin" policy to HTTP header
-					response.setHeader("Access-Control-Allow-Origin", "*");
-
 					returnAsJSONP(callback, res);
 				} else {
 					// JSON
