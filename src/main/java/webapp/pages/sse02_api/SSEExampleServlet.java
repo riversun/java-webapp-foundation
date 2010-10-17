@@ -1,7 +1,4 @@
-package webapp.pages.sse01_simple;
-
-import info.macias.sse.EventBroadcast;
-import info.macias.sse.servlet3.ServletEventTarget;
+package webapp.pages.sse02_api;
 
 import java.io.IOException;
 
@@ -11,17 +8,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import webapp.framework.sse.SSEPushManager;
+import webapp.framework.sse.EventTarget;
+
 @SuppressWarnings("serial")
 
 @WebServlet(asyncSupported = true,name = "sse", urlPatterns = { "/" + "sse" })
 public class SSEExampleServlet extends HttpServlet {
 
-    EventBroadcast broadcaster = new EventBroadcast();
+    SSEPushManager broadcaster = new SSEPushManager();
 
 	// Attaches a subscriber
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        broadcaster.addSubscriber(new ServletEventTarget(req));
+        broadcaster.addTarget(new EventTarget(req));
     }
 
     // Broadcasts a message to all the subscribers
