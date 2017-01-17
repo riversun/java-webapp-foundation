@@ -54,6 +54,16 @@ ___
 ### 1-5. The imported project is converted to maven project like this.
 
 <img src="https://riversun.github.io/img/jweb/import05.png" width=500px />
+
+### Error Handling Case: Pull failed on Eclipse
+
+- Configure Fetch at the GIT perspective
+- Apply "refs/heads/master" in the Source
+- Apply "refs/remotes/origin/master" in the Destination(Maybe set automatically)
+
+<img src="https://riversun.github.io/img/jweb/configure_fetch.png" width=438px />
+
+
 ___
 # Step 2. Add server to Eclipse
 ### 2-1. Open server window
