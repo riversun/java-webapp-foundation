@@ -23,13 +23,11 @@
  *  DEALINGS IN THE SOFTWARE.
  *  
  */
-package webapp.pages;
+package webapp.framework;
 
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-
-import webapp.framework.Controller;
 
 /**
  * Controller Base for web app
@@ -39,8 +37,8 @@ import webapp.framework.Controller;
 public abstract class WebAppBaseController extends Controller {
 
 	@Override
-	public void prepareDoService() throws ServletException, IOException {
-		super.prepareDoService();
+	public boolean prepareDoService() throws ServletException, IOException {
+		return super.prepareDoService();
 	}
 
 	@Override

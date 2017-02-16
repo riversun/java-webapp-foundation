@@ -39,7 +39,7 @@ import org.riversun.string_grabber.StringGrabber;
 import webapp.def.CookieDef;
 import webapp.def.PageDef;
 import webapp.def.ServiceDef;
-import webapp.pages.WebAppBaseController;
+import webapp.framework.WebAppBaseController;
 
 /**
  * 
