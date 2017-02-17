@@ -35,6 +35,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.riversun.d6.core.D6Logger;
 
+import webapp.framework.annotation.CORS;
+
 /**
  * Servlet to generate a controller per access (= 1 thread)<br>
  * For servlet's multi-threaded safety improvement, delegate the service logic
@@ -55,6 +57,10 @@ public abstract class ControllerFactoryServlet extends HttpServlet {
 		}
 	}
 
+	protected void configureControllerOnAccess(Controller controller) {
+
+	}
+
 	/**
 	 * Create concrete controller thread by thread<br>
 	 * 
@@ -70,10 +76,25 @@ public abstract class ControllerFactoryServlet extends HttpServlet {
 
 			final Controller controller = clazz.newInstance();
 
+			configureControllerOnAccess(controller);
+
 			// set req/res
 			controller.request = request;
 			controller.response = response;
 			controller.session = request.getSession();
+
+			// CORS handling[begin]////////////////////
+			final CORS cors = clazz.getAnnotation(CORS.class);
+			if (cors != null) {
+				final String allowFrom = cors.allowFrom();
+				if (allowFrom != null && !allowFrom.isEmpty()) {
+					controller.setAccessControlAllowOrigin(allowFrom);
+				}
+
+				boolean allowCredentials = cors.allowCredentials();
+				controller.setAccessControlAllowCredentials(allowCredentials);
+			}
+			// CORS handling[end]////////////////////
 
 			controller.prepareDoService();
 

@@ -18,6 +18,8 @@ public abstract class WebAPI extends WebAppBaseController {
 
 	@Override
 	public boolean prepareDoService() throws ServletException, IOException {
+
+		// check if this access is preflight
 		if (isPreFlightRequest()) {
 
 			LOGGER.fine("preflight request");
@@ -57,28 +59,6 @@ public abstract class WebAPI extends WebAppBaseController {
 
 		return header != null;
 
-	}
-
-	/**
-	 * Set CORS policy
-	 * 
-	 * @param value
-	 *            specify like "*","https://xxxxxx.com"
-	 */
-	protected void setAccessControlAllowOrigin(String value) {
-		response.addHeader("Access-Control-Allow-Origin", value);
-		response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-	}
-
-	/**
-	 * Enable Cookie while CORS connection
-	 * 
-	 * @param enabled
-	 */
-	protected void setAccessControlAllowCredentials(boolean enabled) {
-		if (enabled) {
-			response.addHeader("Access-Control-Allow-Credentials", String.valueOf(enabled));
-		}
 	}
 
 }

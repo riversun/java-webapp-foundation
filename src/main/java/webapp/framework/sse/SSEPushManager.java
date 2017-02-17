@@ -91,9 +91,11 @@ public class SSEPushManager {
 
 		for (EventTarget eventTarget : mEventTargetList) {
 			try {
+
 				eventTarget.send(messageEvent);
 			} catch (IOException e) {
 				// This target is disconnected. Removing from targetList
+				e.printStackTrace();
 				mEventTargetList.remove(eventTarget);
 			}
 		}
