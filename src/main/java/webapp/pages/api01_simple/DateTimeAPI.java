@@ -79,6 +79,9 @@ public class DateTimeAPI extends ControllerFactoryServlet {
 		@Override
 		public void doService() throws ServletException, IOException {
 
+			// Add "Access-Control-Allow-Origin" policy to HTTP header
+			setAccessControlAllowOrigin("*");
+
 			// get query param as string
 			final String tellme = asString("tellme");
 			final String fmt = asString("fmt");
@@ -114,10 +117,6 @@ public class DateTimeAPI extends ControllerFactoryServlet {
 
 				if (requireJSONP) {
 					// JSONP
-
-					// Add "Access-Control-Allow-Origin" policy to HTTP header
-					response.setHeader("Access-Control-Allow-Origin", "*");
-
 					returnAsJSONP(callback, res);
 				} else {
 					// JSON
